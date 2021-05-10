@@ -4,6 +4,10 @@
     Supports dynamic definition of types based on the Schema.js
 */
 
+interface Constructable<T> {
+    new(...args: any[]): T
+}
+
 /*
     Possible types for a schema field "type" property
  */
@@ -15,7 +19,8 @@ type OneType =
     ObjectConstructor |
     StringConstructor |
     Buffer |
-    string;
+    string |
+    Constructable<any>;
 
 /*
     Schema.indexes signature
@@ -92,6 +97,7 @@ type EntityField<T extends OneTypedField> =
     : T['type'] extends ObjectConstructor ? object
     : T['type'] extends DateConstructor ? Date
     : T['type'] extends ArrayConstructor ? any[]
+    : T['type'] extends Constructable<infer T> ? T
     : never;
 
 /*
