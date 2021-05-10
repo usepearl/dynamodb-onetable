@@ -28,7 +28,6 @@
     "author": "Michael O'Brien <mob@sensedeep.com>",
     "license": "MIT",
     "scripts": {
-        "postinstall": "yarn build",
         "build": "rm -fr dist/* && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && ./fixup",
         "lint": "eslint .",
         "prepare": "npm run build",
