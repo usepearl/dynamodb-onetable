@@ -103,13 +103,39 @@ type EntityField<T extends OneTypedField> =
 /*
     Entities are objects whoes signature is based on the schema model of the same name.
  */
-export type Entity<T extends OneModelSchema, Indexes extends keyof T> = Omit<{
-    [P in keyof T]-?: T[P]["required"] extends true ? EntityField<T[P]> : unknown
-  } 
-  & {
-    [P in keyof T]?: T[P]["required"] extends true ? unknown : EntityField<T[P]>
+
+type RequiredExcluded<T extends OneModelSchema> = 
+    Pick<T, { [K in keyof T]: T[K]["required"] extends true ? never : K }[keyof T]>
+
+type OptionalExcluded<T extends OneModelSchema> = 
+Pick<T, { [K in keyof T]: T[K]["required"] extends true ? K : never }[keyof T]>
+
+type RequiredFields<T extends OneModelSchema> = {
+    [P in keyof T]-?: EntityField<T[P]>
+}
+
+type OptionalFields<T extends OneModelSchema> = {
+    [P in keyof T]?: EntityField<T[P]>
+}
   
-  }, Indexes>;
+
+export type Entity<T extends OneModelSchema, IndexKeys extends keyof T, IndexMap extends {
+    default: {
+        hash: keyof T,
+        range: keyof T
+    },
+    [key: string]: {
+        hash: keyof T,
+        range: keyof T
+    },
+}> = 
+Omit<
+OptionalFields<RequiredExcluded<T>>
+& RequiredFields<OptionalExcluded<T>>
+  & {
+    indexDefinitions: IndexMap
+    }
+  , IndexKeys>;
 
 /*
     Any entity. Essentially untyped.
@@ -161,6 +187,8 @@ export type OneParams = {
     where?: string,
 };
 
+export type OneParamsTyped<Index> = Omit<OneParams, 'index'> & { index: Index }
+
 /*
     Properties for most APIs. Essentially untyped.
  */
@@ -189,18 +217,27 @@ export type AnyModel = {
     updateItem(properties: OneProperties, params?: OneParams): Promise<AnyEntity>;
 };
 
-export class Model<T> {
+export type HasIndexDefinitions<T> = { indexDefinitions: { [key: string]: { hash: keyof T, range: keyof T } }}
+
+export class Model<T extends HasIndexDefinitions<T>, P = Omit<T, "indexDefinitions">> {
     constructor(table: any, name: string, options?: ModelConstructorOptions);
-    create(properties: T, params?: OneParams): Promise<T>;
-    find(properties: T, params?: OneParams): Promise<Paged<T[]>>;
-    get(properties: T, params?: OneParams): Promise<T>;
-    remove(properties: T, params?: OneParams): Promise<void>;
-    scan(properties: T, params?: OneParams): Promise<Paged<T[]>>;
-    update(properties: T, params?: OneParams): Promise<T>;
-    deleteItem(properties: T, params?: OneParams): Promise<void>;
-    getItem(properties: T, params?: OneParams): Promise<T>;
-    putItem(properties: T, params?: OneParams): Promise<T>;
-    queryItems(properties: T, params?: OneParams): Promise<Paged<T[]>>;
-    scanItems(properties: T, params?: OneParams): Promise<Paged<T[]>>;
-    updateItem(properties: T, params?: OneParams): Promise<T>;
+    create(properties: P, params?: OneParams): Promise<P>;
+    find<U extends ExtractIndex<T, IndexName>, IndexName extends keyof T["indexDefinitions"] = 'default', >(properties: Omit<U, "indexDefinitions">, params?: OneParamsTyped<IndexName>): Promise<Paged<T[]>>;
+    get<U extends ExtractIndex<T, IndexName>, IndexName extends keyof T["indexDefinitions"] = 'default', >(properties: Omit<U, "indexDefinitions">, params?: OneParamsTyped<IndexName>): Promise<T>;
+    remove<U extends ExtractIndex<T, IndexName>, IndexName extends keyof T["indexDefinitions"] = 'default', >(properties: Omit<U, "indexDefinitions">, params?: OneParamsTyped<IndexName>): Promise<void>;
+    scan(properties: Partial<P>, params?: OneParams): Promise<Paged<P[]>>;
+    update<U extends ExtractIndex<T, IndexName>, IndexName extends keyof T["indexDefinitions"] = 'default', >(properties: Omit<U, "indexDefinitions"> & Partial<T>, params?: OneParamsTyped<IndexName>): Promise<T>;
+    deleteItem(properties: P, params?: OneParams): Promise<void>;
+    getItem(properties: P, params?: OneParams): Promise<P>;
+    putItem(properties: P, params?: OneParams): Promise<P>;
+    queryItems(properties: P, params?: OneParams): Promise<Paged<P[]>>;
+    scanItems(properties: P, params?: OneParams): Promise<Paged<P[]>>;
+    updateItem(properties: P, params?: OneParams): Promise<P>;
 }
+
+
+export type ExtractIndex<T extends HasIndexDefinitions<T>, IndexName extends ExtractIndexNames<T>> =
+    Pick<T, T["indexDefinitions"][IndexName]["hash"]>  &  Pick<T, T["indexDefinitions"][IndexName]["range"]>
+
+export type ExtractIndexNames<T extends HasIndexDefinitions<T>> = keyof T["indexDefinitions"]
+
