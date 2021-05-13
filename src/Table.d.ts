@@ -41,7 +41,7 @@ export class Table {
     find(modelName: string, properties: OneProperties, params?: OneParams): Promise<AnyEntity[]>;
     get(modelName: string, properties: OneProperties, params?: OneParams): Promise<AnyEntity>;
     getItem(properties: OneProperties, params?: OneParams): Promise<AnyEntity>;
-    getModel<T extends Entity<any, any>>(name: string): Model<T>;
+    getModel<T extends Entity<any, any, any>>(name: string): Model<T>;
     groupByType(items: AnyEntity[]): {};
     listModels(): AnyModel[];
     putItem(properties: OneProperties, params?: OneParams): Promise<AnyEntity>;
