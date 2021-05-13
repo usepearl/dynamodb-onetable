@@ -120,9 +120,9 @@ type OptionalFields<T extends OneModelSchema> = {
   
 
 export type Entity<T extends OneModelSchema, IndexKeys extends keyof T, IndexMap extends {
-    default: {
-        hash: keyof T,
-        range: keyof T
+    primary: {
+        hash: 'pk',
+        range: 'sk'
     },
     [key: string]: {
         hash: keyof T,
@@ -222,11 +222,11 @@ export type HasIndexDefinitions<T> = { indexDefinitions: { [key: string]: { hash
 export class Model<T extends HasIndexDefinitions<T>, P = Omit<T, "indexDefinitions">> {
     constructor(table: any, name: string, options?: ModelConstructorOptions);
     create(properties: P, params?: OneParams): Promise<P>;
-    find<U extends ExtractIndex<T, IndexName>, IndexName extends keyof T["indexDefinitions"] = 'default', >(properties: Omit<U, "indexDefinitions">, params?: OneParamsTyped<IndexName>): Promise<Paged<T[]>>;
-    get<U extends ExtractIndex<T, IndexName>, IndexName extends keyof T["indexDefinitions"] = 'default', >(properties: Omit<U, "indexDefinitions">, params?: OneParamsTyped<IndexName>): Promise<T>;
-    remove<U extends ExtractIndex<T, IndexName>, IndexName extends keyof T["indexDefinitions"] = 'default', >(properties: Omit<U, "indexDefinitions">, params?: OneParamsTyped<IndexName>): Promise<void>;
+    find<U extends ExtractIndex<T, IndexName>, IndexName extends keyof T["indexDefinitions"] = 'primary', >(properties: Omit<U, "indexDefinitions">, params?: OneParamsTyped<IndexName>): Promise<Paged<T[]>>;
+    get<U extends ExtractIndex<T, IndexName>, IndexName extends keyof T["indexDefinitions"] = 'primary', >(properties: Omit<U, "indexDefinitions">, params?: OneParamsTyped<IndexName>): Promise<T>;
+    remove<U extends ExtractIndex<T, IndexName>, IndexName extends keyof T["indexDefinitions"] = 'primary', >(properties: Omit<U, "indexDefinitions">, params?: OneParamsTyped<IndexName>): Promise<void>;
     scan(properties: Partial<P>, params?: OneParams): Promise<Paged<P[]>>;
-    update<U extends ExtractIndex<T, IndexName>, IndexName extends keyof T["indexDefinitions"] = 'default', >(properties: Omit<U, "indexDefinitions"> & Partial<T>, params?: OneParamsTyped<IndexName>): Promise<T>;
+    update<U extends ExtractIndex<T, IndexName>, IndexName extends keyof T["indexDefinitions"] = 'primary', >(properties: Omit<U, "indexDefinitions"> & Partial<T>, params?: OneParamsTyped<IndexName>): Promise<T>;
     deleteItem(properties: P, params?: OneParams): Promise<void>;
     getItem(properties: P, params?: OneParams): Promise<P>;
     putItem(properties: P, params?: OneParams): Promise<P>;
