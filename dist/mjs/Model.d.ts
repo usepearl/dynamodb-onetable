@@ -121,8 +121,8 @@ type OptionalFields<T extends OneModelSchema> = {
 
 export type Entity<T extends OneModelSchema, IndexKeys extends keyof T, IndexMap extends {
     primary: {
-        hash: 'pk',
-        range: 'sk'
+        hash: keyof T,
+        range: keyof T
     },
     [key: string]: {
         hash: keyof T,
