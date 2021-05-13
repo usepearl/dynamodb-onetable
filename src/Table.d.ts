@@ -2,7 +2,7 @@
     Table.d.ts -- Hand crafted type defintions for Table
 */
 
-import { AnyEntity, AnyModel, Model, OneParams, OneProperties, OneModelSchema, OneSchema, Entity } from "./Model";
+import { AnyEntity, AnyModel, Model, OneParams, OneProperties, OneModelSchema, OneSchema, Entity, HasIndexDefinitions } from "./Model";
 
 type TableConstructorParams = {
     client?: {},                    //  Instance of DocumentClient or Dynamo.
