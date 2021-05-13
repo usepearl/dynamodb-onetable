@@ -2,7 +2,7 @@
     Table.d.ts -- Hand crafted type defintions for Table
 */
 
-import { AnyEntity, AnyModel, Model, OneParams, OneProperties, OneModelSchema, OneSchema } from "./Model";
+import { AnyEntity, AnyModel, Model, OneParams, OneProperties, OneModelSchema, OneSchema, Entity } from "./Model";
 
 type TableConstructorParams = {
     client?: {},                    //  Instance of DocumentClient or Dynamo.
@@ -41,7 +41,7 @@ export class Table {
     find(modelName: string, properties: OneProperties, params?: OneParams): Promise<AnyEntity[]>;
     get(modelName: string, properties: OneProperties, params?: OneParams): Promise<AnyEntity>;
     getItem(properties: OneProperties, params?: OneParams): Promise<AnyEntity>;
-    getModel(name: string): AnyModel;
+    getModel<T extends Entity<any, any>>(name: string): Model<T>;
     groupByType(items: AnyEntity[]): {};
     listModels(): AnyModel[];
     putItem(properties: OneProperties, params?: OneParams): Promise<AnyEntity>;

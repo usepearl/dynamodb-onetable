@@ -103,9 +103,13 @@ type EntityField<T extends OneTypedField> =
 /*
     Entities are objects whoes signature is based on the schema model of the same name.
  */
-export type Entity<T extends OneTypedModel> = {
-    [P in keyof T]?: EntityField<T[P]>
-};
+export type Entity<T extends OneModelSchema, Indexes extends keyof T> = Omit<{
+    [P in keyof T]-?: T[P]["required"] extends true ? EntityField<T[P]> : unknown
+  } 
+  & {
+    [P in keyof T]?: T[P]["required"] extends true ? unknown : EntityField<T[P]>
+  
+  }, Indexes>;
 
 /*
     Any entity. Essentially untyped.

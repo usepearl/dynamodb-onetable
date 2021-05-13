@@ -105,6 +105,7 @@ export class Expression {
             } else if (typeof value == 'object') {
                 value = this.removeEmptyStrings(field, value)
             }
+
             this.add(field, value)
             if (this.fallback) return
         }
@@ -153,7 +154,6 @@ export class Expression {
      */
     add(field, value) {
         let op = this.op
-
         let attribute = field.attribute
         if (/* op == 'update' && */ attribute.length > 1) {
             //  Mapped (packed) field
