@@ -106,12 +106,12 @@ type EntityFieldFromType<T extends OneField> =
       T['type'] extends (ArrayConstructor | 'array') ? ArrayItemType<T>[]
     : T['type'] extends (BooleanConstructor | 'boolean') ? boolean
     : T['type'] extends (NumberConstructor | 'number') ? number
-    : T['type'] extends (ObjectConstructor | 'object') ? Entity<T["schema"]>
+    : T['type'] extends (ObjectConstructor | 'object') ? (T["schema"] extends OneModelSchema ? Entity<T["schema"]>: any )
     : T['type'] extends (DateConstructor | 'date') ? Date
     : T['type'] extends (ArrayBufferConstructor) ? ArrayBuffer
     : T['type'] extends (StringConstructor | 'string') ? string
     : T['type'] extends (SetConstructor | 'set') ? Set<any>
-    : T['type'] extends 'typed-array' ? EntityFieldFromType<T["items"]>[]
+    : T['type'] extends 'typed-array' ? (T["items"] extends OneField ? EntityFieldFromType<T["items"]>[]: any)
     : never;
 
 type ArrayItemType<T extends OneField> =
