@@ -34,6 +34,10 @@ const ValidTypes = [ 'array', 'arraybuffer', 'binary', 'boolean', 'buffer', 'dat
 const SanityPages = 1000
 const FollowThreads = 10
 
+function isEmpty(obj) {
+    return !!obj && Object.keys(obj).length === 0 && Object.getPrototypeOf(obj) === Object.prototype
+}
+
 export class Model {
 
     /*
@@ -977,7 +981,8 @@ export class Model {
             } else {
                 [att, sub] = field.attribute
             }
-            let value = raw[att]
+
+            let value = !isEmpty(raw[att]) ? raw[att] : undefined
             if (value === undefined) {
                 continue
             }
