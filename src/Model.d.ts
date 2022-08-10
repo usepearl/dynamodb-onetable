@@ -280,4 +280,6 @@ export class Model<T> {
     scan(properties?: EntityParameters<T>, params?: OneParams): Promise<Paged<T>>;
     update(properties: EntityParameters<T>, params?: OneParams): Promise<T | undefined>;
     upsert(properties: EntityParameters<T>, params?: OneParams): Promise<T | undefined>;
+    template(fieldName: string, properties: EntityParameters<T>, params?: OneParams): string;
+
 }
