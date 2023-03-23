@@ -268,8 +268,8 @@ export type AnyModel = {
     upsert(properties: OneProperties, params?: OneParams): Promise<AnyEntity | undefined>;
 };
 
-type CreateProperties<T> = Omit<T, keyof Generated<ExtractModel<T>>> & Generated<ExtractModel<T>>
-type UpdateProperties<T> = Partial<T>
+export type CreateProperties<T> = Omit<T, keyof Generated<ExtractModel<T>>> & Generated<ExtractModel<T>>
+export type UpdateProperties<T> = Partial<T>
 
 export class Model<T> {
     constructor(table: any, name: string, options?: ModelConstructorOptions);

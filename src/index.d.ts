@@ -15,7 +15,9 @@ import {
     OneProperties,
     OneSchema,
     OneType,
-    Paged
+    Paged,
+    CreateProperties,
+    UpdateProperties
 } from './Model'
 
 import { Table } from './Table'
@@ -41,6 +43,8 @@ export {
     OneSchema,
     OneType,
     Paged,
+    CreateProperties,
+    UpdateProperties,
     Table,
     ULID,
     UUID,
