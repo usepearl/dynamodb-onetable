@@ -269,6 +269,8 @@ export type AnyModel = {
 };
 
 type CreateProperties<T> = Omit<T, keyof Generated<ExtractModel<T>>> & Generated<ExtractModel<T>>
+type UpdateProperties<T> = Partial<T>
+
 export class Model<T> {
     constructor(table: any, name: string, options?: ModelConstructorOptions);
     create(properties: CreateProperties<T>, params?: OneParams): Promise<T>;
